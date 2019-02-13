@@ -1,9 +1,7 @@
-import { autorun, observable, reaction } from 'mobx';
-import moment from 'moment';
+import { observable, reaction } from 'mobx';
 import DelayAppComponent from './Component';
 
 import { DEFAULT_FEATURES_CONFIG } from '../../config';
-import { gaEvent } from '../../lib/analytics';
 
 const debug = require('debug')('Franz:feature:delayApp');
 
@@ -25,13 +23,10 @@ function setVisibility(value) {
 export default function init(stores) {
   debug('Initializing `delayApp` feature');
 
-  const shownAfterLaunch = false;
-  const timeLastDelay = moment();
-
   reaction(
     () => stores.features.features.needToWaitToProceed
       && !stores.user.data.isPremium,
-    (isEnabled) => {
+    () => {
       // if (isEnabled) {
       //   debug('Enabling `delayApp` feature');
 
