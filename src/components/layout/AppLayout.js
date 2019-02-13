@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import { TitleBar } from 'electron-react-titlebar';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { observer, PropTypes as MobxPropTypes } from "mobx-react";
+import { defineMessages, intlShape } from "react-intl";
+import { TitleBar } from "electron-react-titlebar";
 
-import InfoBar from '../ui/InfoBar';
-import { Component as DelayApp } from '../../features/delayApp';
-import { Component as BasicAuth } from '../../features/basicAuth';
-import ErrorBoundary from '../util/ErrorBoundary';
+import InfoBar from "../ui/InfoBar";
+import { Component as DelayApp } from "../../features/delayApp";
+import { Component as BasicAuth } from "../../features/basicAuth";
+import ErrorBoundary from "../util/ErrorBoundary";
 
 // import globalMessages from '../../i18n/globalMessages';
 
-import { isWindows } from '../../environment';
+import { isWindows } from "../../environment";
 
 function createMarkup(HTMLString) {
   return { __html: HTMLString };
@@ -19,32 +19,33 @@ function createMarkup(HTMLString) {
 
 const messages = defineMessages({
   servicesUpdated: {
-    id: 'infobar.servicesUpdated',
-    defaultMessage: '!!!Your services have been updated.',
+    id: "infobar.servicesUpdated",
+    defaultMessage: "!!!Your services have been updated."
   },
   updateAvailable: {
-    id: 'infobar.updateAvailable',
-    defaultMessage: '!!!A new update for Franz is available.',
+    id: "infobar.updateAvailable",
+    defaultMessage: "!!!A new update for Franz is available."
   },
   buttonReloadServices: {
-    id: 'infobar.buttonReloadServices',
-    defaultMessage: '!!!Reload services',
+    id: "infobar.buttonReloadServices",
+    defaultMessage: "!!!Reload services"
   },
   changelog: {
-    id: 'infobar.buttonChangelog',
-    defaultMessage: '!!!Changelog',
+    id: "infobar.buttonChangelog",
+    defaultMessage: "!!!Changelog"
   },
   buttonInstallUpdate: {
-    id: 'infobar.buttonInstallUpdate',
-    defaultMessage: '!!!Restart & install update',
+    id: "infobar.buttonInstallUpdate",
+    defaultMessage: "!!!Restart & install update"
   },
   requiredRequestsFailed: {
-    id: 'infobar.requiredRequestsFailed',
-    defaultMessage: '!!!Could not load services and user information',
-  },
+    id: "infobar.requiredRequestsFailed",
+    defaultMessage: "!!!Could not load services and user information"
+  }
 });
 
-export default @observer class AppLayout extends Component {
+@observer
+export default class AppLayout extends Component {
   static propTypes = {
     isFullScreen: PropTypes.bool.isRequired,
     sidebar: PropTypes.element.isRequired,
@@ -62,15 +63,15 @@ export default @observer class AppLayout extends Component {
     retryRequiredRequests: PropTypes.func.isRequired,
     areRequiredRequestsLoading: PropTypes.bool.isRequired,
     darkMode: PropTypes.bool.isRequired,
-    isDelayAppScreenVisible: PropTypes.bool.isRequired,
+    isDelayAppScreenVisible: PropTypes.bool.isRequired
   };
 
   static defaultProps = {
-    children: [],
+    children: []
   };
 
   static contextTypes = {
-    intl: intlShape,
+    intl: intlShape
   };
 
   render() {
@@ -91,30 +92,39 @@ export default @observer class AppLayout extends Component {
       retryRequiredRequests,
       areRequiredRequestsLoading,
       darkMode,
-      isDelayAppScreenVisible,
+      isDelayAppScreenVisible
     } = this.props;
 
     const { intl } = this.context;
 
     return (
       <ErrorBoundary>
-        <div className={(darkMode ? 'theme__dark' : '')}>
+        <div className={darkMode ? "theme__dark" : ""}>
           <div className="app">
-            {isWindows && !isFullScreen && <TitleBar menu={window.franz.menu.template} icon="assets/images/logo.svg" />}
+            {isWindows &&
+              !isFullScreen && (
+                <TitleBar
+                  menu={window.franz.menu.template}
+                  icon="assets/images/logo.svg"
+                />
+              )}
             <div className="app__content">
               {sidebar}
               <div className="app__service">
-                {news.length > 0 && news.map(item => (
-                  <InfoBar
-                    key={item.id}
-                    position="top"
-                    type={item.type}
-                    sticky={item.sticky}
-                    onHide={() => removeNewsItem({ newsId: item.id })}
-                  >
-                    <span dangerouslySetInnerHTML={createMarkup(item.message)} />
-                  </InfoBar>
-                ))}
+                {news.length > 0 &&
+                  news.map(item => (
+                    <InfoBar
+                      key={item.id}
+                      position="top"
+                      type={item.type}
+                      sticky={item.sticky}
+                      onHide={() => removeNewsItem({ newsId: item.id })}
+                    >
+                      <span
+                        dangerouslySetInnerHTML={createMarkup(item.message)}
+                      />
+                    </InfoBar>
+                  ))}
                 {/* {!isOnline && (
                   <InfoBar
                     type="danger"
@@ -124,18 +134,19 @@ export default @observer class AppLayout extends Component {
                     {intl.formatMessage(globalMessages.notConnectedToTheInternet)}
                   </InfoBar>
                 )} */}
-                {!areRequiredRequestsSuccessful && showRequiredRequestsError && (
-                  <InfoBar
-                    type="danger"
-                    ctaLabel="Try again"
-                    ctaLoading={areRequiredRequestsLoading}
-                    sticky
-                    onClick={retryRequiredRequests}
-                  >
-                    <span className="mdi mdi-flash" />
-                    {intl.formatMessage(messages.requiredRequestsFailed)}
-                  </InfoBar>
-                )}
+                {!areRequiredRequestsSuccessful &&
+                  showRequiredRequestsError && (
+                    <InfoBar
+                      type="danger"
+                      ctaLabel="Try again"
+                      ctaLoading={areRequiredRequestsLoading}
+                      sticky
+                      onClick={retryRequiredRequests}
+                    >
+                      <span className="mdi mdi-flash" />
+                      {intl.formatMessage(messages.requiredRequestsFailed)}
+                    </InfoBar>
+                  )}
                 {showServicesUpdatedInfoBar && (
                   <InfoBar
                     type="primary"
@@ -155,14 +166,12 @@ export default @observer class AppLayout extends Component {
                     sticky
                   >
                     <span className="mdi mdi-information" />
-                    {intl.formatMessage(messages.updateAvailable)}
-                    {' '}
+                    {intl.formatMessage(messages.updateAvailable)}{" "}
                     <a href="https://meetfranz.com/changelog" target="_blank">
                       <u>{intl.formatMessage(messages.changelog)}</u>
                     </a>
                   </InfoBar>
                 )}
-                {isDelayAppScreenVisible && (<DelayApp />)}
                 <BasicAuth />
                 {services}
               </div>
